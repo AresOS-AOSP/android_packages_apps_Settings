@@ -47,19 +47,6 @@ import java.util.Locale;
  * accessibility service to access user data before the service is enabled
  */
 public class AccessibilityServiceWarning {
-    private static final View.OnTouchListener filterTouchListener = (View v, MotionEvent event) -> {
-        // Filter obscured touches by consuming them.
-        if (((event.getFlags() & MotionEvent.FLAG_WINDOW_IS_OBSCURED) != 0)
-                || ((event.getFlags() & MotionEvent.FLAG_WINDOW_IS_PARTIALLY_OBSCURED) != 0)) {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                Toast.makeText(v.getContext(), R.string.touch_filtered_warning,
-                        Toast.LENGTH_SHORT).show();
-            }
-            return true;
-        }
-        return false;
-    };
-
     /**
      * The interface to execute the uninstallation action.
      */
@@ -118,7 +105,6 @@ public class AccessibilityServiceWarning {
         Button permissionDenyButton = content.findViewById(
                 R.id.permission_enable_deny_button);
         permissionAllowButton.setOnClickListener(listener);
-        permissionAllowButton.setOnTouchListener(filterTouchListener);
         permissionDenyButton.setOnClickListener(listener);
 
         final Button uninstallButton = content.findViewById(
