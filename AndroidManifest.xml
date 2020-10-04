@@ -284,7 +284,6 @@
             android:name=".Settings$MobileNetworkActivity"
             android:label="@string/network_settings_title"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:launchMode="singleTop"
             android:exported="true">
             <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
                        android:value="com.android.settings.network.telephony.MobileNetworkSettings"/>
