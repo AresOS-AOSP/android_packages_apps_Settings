@@ -59,4 +59,8 @@
     <string name="aod_limit_refresh_rate_summary">Cap the refresh rate to 60Hz when the lock screen is visible to save battery.</string>
     <string name="per_app_refresh_rate_title">Per-app refresh rate</string>
     <string name="per_app_refresh_rate_summary">Set a custom refresh rate for specific applications.</string>
+
+    <!-- Battery saver refresh rate -->
+    <string name="battery_saver_refresh_rate_title">Reduce refresh rate</string>
+    <string name="battery_saver_refresh_rate_summary">Use 60 Hz screen refresh rate to save power when Battery Saver is on</string>
 </resources>
