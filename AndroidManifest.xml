@@ -5184,21 +5184,21 @@
                 android:value="true" />
         </activity>
 
-        <!-- Begin Personalisation Settings -->
-        <activity android:name="Settings$PersonalisationLayoutActivity"
-                android:label="@string/personalisation_settings_title"
-                android:icon="@drawable/ic_homepage_personalisation"
-                android:exported="true"
-                android:taskAffinity="com.android.settings"
+        <!-- AresOS additions -->
+        <activity android:name=".Settings$PersonalisationSettingsActivity"
+                  android:label="@string/personalisation_settings_title"
+                  android:icon="@drawable/ic_homepage_personalisation"
+                  android:exported="true"
+                  android:parentActivityName="com.android.settings">
                 android:parentActivityName="Settings">
             <intent-filter android:priority="1">
                 <action android:name="com.android.settings.action.SETTINGS"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <meta-data android:name="com.android.settings.FRAGMENT_CLASS"
-                       android:value="com.custom.settings.PersonalisationLayout" />
+                       android:value="com.custom.settings.PersonalisationSettings"/>
             <meta-data android:name="com.android.settings.title"
-                       android:resource="@string/personalisation_settings_title" />
+                       android:resource="@string/personalisation_settings_title" />                       
             <meta-data android:name="com.android.settings.summary"
                        android:resource="@string/personalisation_settings_summary"/>
             <meta-data android:name="com.android.settings.PRIMARY_PROFILE_CONTROLLED"

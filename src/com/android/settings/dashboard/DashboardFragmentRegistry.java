@@ -51,7 +51,7 @@ import com.android.settings.security.SecuritySettings;
 import com.android.settings.system.SystemDashboardFragment;
 import com.android.settingslib.drawer.CategoryKey;
 
-import com.custom.settings.PersonalisationLayout;
+import com.custom.settings.PersonalisationSettings;
 
 import java.util.Map;
 
@@ -137,7 +137,7 @@ public class DashboardFragmentRegistry {
                 CategoryKey.CATEGORY_SPECIAL_APP_ACCESS);
         PARENT_TO_CATEGORY_KEY_MAP.put(MoreSecurityPrivacyFragment.class.getName(),
                 CategoryKey.CATEGORY_MORE_SECURITY_PRIVACY_SETTINGS);
-        PARENT_TO_CATEGORY_KEY_MAP.put(PersonalisationLayout.class.getName(),
+        PARENT_TO_CATEGORY_KEY_MAP.put(PersonalisationSettings.class.getName(),
                 CategoryKey.CATEGORY_PERSONALISATION);
 
         CATEGORY_KEY_TO_PARENT_MAP = new ArrayMap<>(PARENT_TO_CATEGORY_KEY_MAP.size());
