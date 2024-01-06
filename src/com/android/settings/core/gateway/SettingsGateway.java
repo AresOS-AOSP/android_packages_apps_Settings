@@ -22,6 +22,7 @@ import com.android.settings.MainClear;
 import com.android.settings.MainClearConfirm;
 import com.android.settings.ResetNetwork;
 import com.android.settings.Settings;
+import com.android.settings.Settings.ScreenRefreshRateActivity;
 import com.android.settings.TestingSettings;
 import com.android.settings.TrustedCredentialsSettings;
 import com.android.settings.accessibility.AccessibilityDetailsSettingsFragment;
@@ -221,6 +222,7 @@ import com.android.settings.wifi.tether.WifiTetherSettings;
 
 import com.crdroid.settings.crDroidSettingsLayout;
 import com.crdroid.settings.fragments.ui.SmartPixels;
+import com.crdroid.settings.display.refreshrate.ScreenRefreshRateFragment;
 
 public class SettingsGateway {
 
@@ -431,6 +433,7 @@ public class SettingsGateway {
             crDroidSettingsLayout.class.getName(),
             RunningServices.class.getName(),
             SmartPixels.class.getName(),
+            ScreenRefreshRateFragment.class.getName(),
     };
 
     public static final String[] SETTINGS_FOR_RESTRICTED = {
@@ -480,5 +483,6 @@ public class SettingsGateway {
             Settings.crDroidSettingsLayoutActivity.class.getName(),
             Settings.DevRunningServicesActivity.class.getName(),
             Settings.SmartPixelsActivity.class.getName(),
+            Settings.ScreenRefreshRateActivity.class.getName(),
     };
 }
