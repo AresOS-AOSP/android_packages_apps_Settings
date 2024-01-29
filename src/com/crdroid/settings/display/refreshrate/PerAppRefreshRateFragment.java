@@ -16,9 +16,9 @@ import java.util.List;
 
 import com.crdroid.display.RefreshRateManager;
 
-import com.crdroid.settings.fragment.PerAppConfigFragment;
+import com.crdroid.settings.fragment.PerAppListConfigFragment;
 
-public class PerAppRefreshRateFragment extends PerAppConfigFragment {
+public class PerAppRefreshRateFragment extends PerAppListConfigFragment {
 
     private DisplayRefreshRateHelper mHelper;
     private RefreshRateManager mRefreshRateManager;
