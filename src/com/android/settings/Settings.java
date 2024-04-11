@@ -819,4 +819,6 @@ public class Settings extends SettingsActivity {
             }
         }
     }
+
+    public static class PrivateDnsSettingsActivity extends SettingsActivity { /* empty */ }
 }
