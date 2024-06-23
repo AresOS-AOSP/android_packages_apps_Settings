@@ -49,11 +49,6 @@ public class AdbRootPreferenceController extends DeveloperOptionsPreferenceContr
     }
 
     @Override
-    public boolean isAvailable() {
-        return mADBRootService.isSupported();
-    }
-
-    @Override
     public void displayPreference(PreferenceScreen screen) {
         super.displayPreference(screen);
 
