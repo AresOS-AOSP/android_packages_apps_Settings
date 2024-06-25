@@ -19,7 +19,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/search_bar_margin">
+    android:layout_marginVertical="@dimen/search_bar_margin"
+    android:layout_marginStart="@dimen/card_highlight_margin_start"
+    android:layout_marginEnd="@dimen/card_highlight_margin_end">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/search_bar"
@@ -32,7 +34,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/search_bar_height"
             android:paddingStart="@dimen/search_bar_padding_start"
-            android:paddingEnd="@dimen/search_bar_padding_end"
             android:background="@drawable/search_bar_selected_background"
             android:touchscreenBlocksFocus="false"
             android:nextFocusForward="@+id/homepage_container"
@@ -45,7 +46,18 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/search_bar_title_padding_start"
                 android:layout_gravity="start"
-                android:text="@string/search_menu"/>
+                android:textColor="@color/top_level_preference_text_color_secondary"
+                android:text="@string/search_homepage"/>
+            <ImageView
+                android:id="@+id/account_avatar"
+                android:layout_width="@dimen/custom_avatar_length"
+                android:layout_height="@dimen/custom_avatar_length"
+                android:layout_marginEnd="@dimen/custom_avatar_margin_end"
+                android:padding="6dp"
+                android:visibility="invisible"
+                android:layout_gravity="end"
+                android:accessibilityTraversalAfter="@id/homepage_title"
+                android:contentDescription="@string/search_bar_account_avatar_content_description" />
         </Toolbar>
     </com.google.android.material.card.MaterialCardView>
 
