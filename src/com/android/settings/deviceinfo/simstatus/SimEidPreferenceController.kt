@@ -39,6 +39,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.custom.settings.utils.AdaptivePreferenceUtils
 
 /**
  * This is to show a preference regarding EID of SIM card.
@@ -70,6 +71,8 @@ class SimEidPreferenceController(context: Context, preferenceKey: String) :
     override fun displayPreference(screen: PreferenceScreen) {
         super.displayPreference(screen)
         preference = screen.findPreference(preferenceKey)!!
+        preference.setLayoutResource(AdaptivePreferenceUtils.getLayoutResourceId(mContext, "middle", false))
+        preference.setIcon(R.drawable.ic_sim_card_download)
     }
 
     override fun onViewCreated(viewLifecycleOwner: LifecycleOwner) {
