@@ -200,6 +200,7 @@ import com.android.settings.wifi.details.WifiNetworkDetailsFragment;
 import com.android.settings.wifi.p2p.WifiP2pSettings;
 import com.android.settings.wifi.savedaccesspoints2.SavedAccessPointsWifiSettings2;
 import com.android.settings.wifi.tether.WifiTetherSettings;
+import con.android.settings.wifi.tether.WifiTetherClientManager;
 
 import com.custom.settings.PersonalisationSettings;
 
@@ -393,6 +394,7 @@ public class SettingsGateway {
             VibrationIntensitySettingsFragment.class.getName(),
             RunningServices.class.getName(),
             PersonalisationSettings.class.getName(),
+            WifiTetherClientManager.class.getName(),
     };
 
     public static final String[] SETTINGS_FOR_RESTRICTED = {
