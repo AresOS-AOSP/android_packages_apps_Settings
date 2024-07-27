@@ -27,6 +27,7 @@
         android:title="@string/about_device_name"
         android:summary="@string/summary_placeholder"
         settings:enableCopying="true"
+        settings:layout="@layout/pengu_card_sub_top"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.AboutDeviceNamePreferenceController"/>
 
     <!-- Android version -->
@@ -36,6 +37,7 @@
         android:summary="@string/summary_placeholder"
         settings:enableCopying="true"
         settings:searchable="false"
+        settings:layout="@layout/pengu_card_sub_mid"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.FirmwareVersionDetailPreferenceController"/>
 
     <!-- Lineage version -->
@@ -44,6 +46,7 @@
         android:title="@string/firmware_name_version"
         android:summary="@string/summary_placeholder"
         settings:enableCopying="true"
+        settings:layout="@layout/pengu_card_sub_mid"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.LineageVersionDetailPreferenceController"/>
 
     <Preference
@@ -51,6 +54,7 @@
         android:title="@string/maintainer"
         android:summary="@string/summary_placeholder"
         settings:enableCopying="true"
+        settings:layout="@layout/pengu_card_sub_mid"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.MaintainerPreferenceController"/>
 
     <!-- Security patch -->
@@ -58,14 +62,15 @@
         android:key="security_key"
         android:title="@string/security_patch"
         settings:enableCopying="true"
+        settings:layout="@layout/pengu_card_sub_mid"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.SecurityPatchLevelPreferenceController"/>
 
     <!-- Vendor security patch -->
     <Preference
         android:key="vendor_security_key"
         android:title="@*lineageos.platform:string/lineage_vendor_security_patch"
-        android:selectable="false"
         settings:enableCopying="true"
+        settings:layout="@layout/pengu_card_sub_mid"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.LineageVendorSecurityPatchLevelPreferenceController"/>
 
     <!-- Mainline module version -->
@@ -83,8 +88,8 @@
         android:key="base_band"
         android:title="@string/baseband_version"
         android:summary="@string/summary_placeholder"
-        android:selectable="false"
         settings:enableCopying="true"
+        settings:layout="@layout/pengu_card_sub_mid"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.BasebandVersionPreferenceController"/>
 
     <!-- Kernel -->
@@ -93,6 +98,7 @@
         android:title="@string/kernel_version"
         android:summary="@string/summary_placeholder"
         settings:enableCopying="true"
+        settings:layout="@layout/pengu_card_sub_mid"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.KernelVersionPreferenceController"/>
 
     <!-- Build date -->
@@ -100,8 +106,8 @@
         android:key="os_build_date"
         android:title="@*lineageos.platform:string/build_date"
         android:summary="@string/summary_placeholder"
-        android:selectable="false"
         settings:enableCopying="true"
+        settings:layout="@layout/pengu_card_sub_mid"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.LineageBuildDatePreferenceController"/>
 
     <!-- Build -->
@@ -109,8 +115,8 @@
         android:key="os_build_number"
         android:title="@string/build_number"
         android:summary="@string/summary_placeholder"
-        android:selectable="false"
         settings:enableCopying="true"
+        settings:layout="@layout/pengu_card_sub_bot"
         settings:controller="com.android.settings.deviceinfo.firmwareversion.SimpleBuildNumberPreferenceController"/>
 
 </PreferenceScreen>
