@@ -21,26 +21,22 @@
     android:key="my_device_info_pref_screen"
     android:title="@string/about_settings">
 
-        <com.android.settingslib.widget.LayoutPreference
-            android:key="my_device_info_header"
-            android:order="-997"
-            android:layout="@layout/about_device_info"
-            android:selectable="false"
-            settings:isPreferenceVisible="false"/>
+    <!-- System updates -->
+    <Preference
+        android:key="additional_system_update_settings"
+        android:title="@string/additional_system_update_settings_list_item_title"
+        android:order="-999"
+        settings:controller="com.android.settings.system.AdditionalSystemUpdatePreferenceController">
+        <intent android:action="android.intent.action.MAIN"
+                android:targetPackage="@string/additional_system_update"
+                android:targetClass="@string/additional_system_update_menu"/>
+    </Preference>
 
-        <com.android.settingslib.widget.LayoutPreference
-            android:key="my_device_hw_header"
-            android:order="-999"
-            android:layout="@layout/about_device_info_hw"
-            android:selectable="false"
-            settings:isPreferenceVisible="true"/>
+    <com.penguin.widget.ShrinkablePreference
+        android:key="ota_card"
+        android:order="-998"
+        settings:layout="@layout/pengu_tp_view" />
 
-        <com.android.settingslib.widget.LayoutPreference
-            android:key="my_device_sw_header"
-            android:order="-998"
-            android:layout="@layout/about_device_info_sw"
-            android:selectable="false"
-            settings:isPreferenceVisible="true"/>
 
     <PreferenceCategory
         android:order="-996"
@@ -66,11 +62,6 @@
             settings:position="bottom"
             android:selectable="true"/>
 
-    <PreferenceCategory
-        android:key="basic_info_category"
-        android:selectable="false"
-        android:title="@string/my_device_info_basic_info_category_title">
-
         <!-- Account name -->
         <Preference
             android:key="branded_account"
@@ -91,7 +82,6 @@
             settings:isPreferenceVisible="@bool/config_show_sim_info"
             settings:controller="com.android.settings.deviceinfo.PhoneNumberPreferenceController"
             settings:enableCopying="true"/>
-    </PreferenceCategory>
 
     <PreferenceCategory
         android:key="device_detail_category"
