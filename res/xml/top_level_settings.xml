@@ -186,6 +186,15 @@
         settings:controller="com.android.settings.accounts.TopLevelAccountEntryPreferenceController"/>
 
     <com.android.settings.widget.HomepagePreference
+        android:fragment="com.custom.settings.PersonalisationSettings"
+        android:icon="@drawable/ic_settings_cogs"
+        android:key="top_level_personalisation"
+        android:order="-131"
+        android:title="@string/personalisation_settings_title"
+        android:summary="@string/personalisation_settings_summary"
+        settings:controller="com.custom.settings.TopLevelExtensionsEntryPreferenceController"/>
+
+    <com.android.settings.widget.HomepagePreference
         android:fragment="com.android.settings.system.SystemDashboardFragment"
         android:icon="@drawable/ic_settings_system_dashboard_white"
         android:key="top_level_system"
