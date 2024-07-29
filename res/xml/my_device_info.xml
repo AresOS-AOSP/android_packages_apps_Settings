@@ -21,33 +21,16 @@
     android:key="my_device_info_pref_screen"
     android:title="@string/about_settings">
 
-        <com.android.settingslib.widget.LayoutPreference
-            android:key="my_device_info_header"
-            android:order="-997"
-            android:layout="@layout/about_device_info"
-            android:selectable="false"
-            settings:isPreferenceVisible="false"/>
-
-        <com.android.settingslib.widget.LayoutPreference
-            android:key="my_device_hw_header"
-            android:order="-999"
-            android:layout="@layout/about_device_info_hw"
-            android:selectable="false"
-            settings:isPreferenceVisible="true"/>
-
-        <com.android.settingslib.widget.LayoutPreference
-            android:key="my_device_sw_header"
-            android:order="-998"
-            android:layout="@layout/about_device_info_sw"
-            android:selectable="false"
-            settings:isPreferenceVisible="true"/>
+    <com.android.settingslib.widget.LayoutPreference
+        android:key="my_device_info_header"
+        android:order="-1"
+        android:layout="@layout/settings_entity_header"
+        android:selectable="false"/>
 
     <PreferenceCategory
-        android:order="-996"
+        android:key="basic_info_category"
         android:selectable="false"
-        android:title="Device Info"
-        settings:shouldDisableView="false"
-        settings:enabled="false" />
+        android:title="@string/my_device_info_basic_info_category_title">
         
         <!-- Device name -->
         <com.android.settings.widget.ValidatedEditTextPreference
@@ -58,18 +41,6 @@
             android:summary="@string/summary_placeholder"
             settings:controller="com.android.settings.deviceinfo.DeviceNamePreferenceController"
             settings:enableCopying="true"/>
-
-        <com.android.settings.preferences.ui.AdaptivePreference
-            android:key="rom_build_status"
-            android:order="-994"
-            settings:enableCopying="true"
-            settings:position="bottom"
-            android:selectable="true"/>
-
-    <PreferenceCategory
-        android:key="basic_info_category"
-        android:selectable="false"
-        android:title="@string/my_device_info_basic_info_category_title">
 
         <!-- Account name -->
         <Preference
