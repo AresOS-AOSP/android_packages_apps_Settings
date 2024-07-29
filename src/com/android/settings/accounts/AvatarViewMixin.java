@@ -45,6 +45,8 @@ import com.android.settingslib.utils.ThreadUtils;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import com.android.internal.util.crdroid.Utils;
+
 /**
  * Avatar related work to the onStart method of registered observable classes
  * in {@link SettingsHomepageActivity}.
@@ -73,7 +75,7 @@ public class AvatarViewMixin implements LifecycleObserver {
      * @return true if the avatar icon is supported.
      */
     public static boolean isAvatarSupported(Context context) {
-        if (!context.getResources().getBoolean(R.bool.config_show_avatar_in_homepage)) {
+        if (!Utils.isPackageInstalled(context, "com.google.android.gms")) {
             Log.d(TAG, "Feature disabled by config. Skipping");
             return false;
         }
