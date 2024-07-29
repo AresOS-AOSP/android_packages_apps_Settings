@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.UserManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import androidx.annotation.VisibleForTesting;
@@ -39,6 +40,8 @@ import com.android.settingslib.search.SearchIndexableRaw;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.custom.settings.utils.AdaptivePreferenceUtils;
 
 public class SimStatusPreferenceController extends BasePreferenceController {
 
@@ -106,6 +109,17 @@ public class SimStatusPreferenceController extends BasePreferenceController {
             final Preference multiSimPreference = createNewPreference(screen.getContext());
             multiSimPreference.setOrder(mSlotSimStatus.getPreferenceOrdering(simSlotNumber));
             multiSimPreference.setKey(mSlotSimStatus.getPreferenceKey(simSlotNumber));
+            multiSimPreference.setIcon(R.drawable.ic_sim_card);
+            TelephonyManager mTelephonyManager = mContext.getSystemService(TelephonyManager.class);
+            if (mTelephonyManager.getPhoneCount() < 2) {
+                multiSimPreference.setLayoutResource(AdaptivePreferenceUtils.getLayoutResourceId(mContext, "top", false));
+            } else {
+                if (simSlotNumber == 0) {
+                    multiSimPreference.setLayoutResource(AdaptivePreferenceUtils.getLayoutResourceId(mContext, "top", false));
+                } else {
+                    multiSimPreference.setLayoutResource(AdaptivePreferenceUtils.getLayoutResourceId(mContext, "middle", false));
+                }
+            }
             category.addPreference(multiSimPreference);
         }
     }
