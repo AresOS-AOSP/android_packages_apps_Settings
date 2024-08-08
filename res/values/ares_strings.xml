@@ -49,4 +49,7 @@
     <!-- Penguin maintainer -->
     <string name="maintainer">Maintainer</string>
     <string name="ares_maintainer" translatable="false">Pri | Chris</string>
+
+    <!-- Screenshot shutter -->
+    <string name="screenshot_shutter_sound_title">Screenshot sound</string>
 </resources>
