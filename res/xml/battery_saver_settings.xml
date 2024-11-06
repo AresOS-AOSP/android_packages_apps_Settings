@@ -78,7 +78,7 @@
             android:order="130"/>
     </com.google.android.settings.fuelgauge.batterysaver.ExpandDividerPreference>
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:order="90"
         android:key="battery_saver_rr_switch"
         android:title="@string/battery_saver_refresh_rate_title"
