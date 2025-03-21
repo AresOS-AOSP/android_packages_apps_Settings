@@ -132,6 +132,7 @@ android_library {
         // Lineage dependencies
         "org.lineageos.platform.internal",
         "LineagePreferenceLib",
+        "SystemUISharedLib",
     ],
 
     plugins: [
