@@ -185,4 +185,15 @@
     <string name="battery_maximum_capacity">Maximum capacity</string>
     <string name="battery_maximum_capacity_summary">%1$d mAh (%2$d%%)</string>
     <string name="battery_maximum_capacity_not_available" translatable="false">@string/battery_cycle_count_not_available</string>
+
+    <!-- Model and Hardware -->
+    <string name="ares_version">AresOS version</string>
+    <string name="ares_device_title">Device</string>
+    <string name="ares_processor_code_title">Processor</string>
+    <string name="ares_battery_type_title">Battery</string>
+    <string name="ares_screen_title">Screen</string>
+    <string name="ares_device_message">Unknown</string>
+    <string name="ares_processor_code_message">Unknown</string>
+    <string name="ares_battery_type_message">Unknown</string>
+    <string name="ares_screen_message">Unknown</string>
 </resources>
