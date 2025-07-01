@@ -58,6 +58,8 @@
 
     <!-- Dialog error color. -->
     <color name="settings_dialog_colorError">#f28b82</color> <!-- Red 300 -->
+    <color name="mtx_text_color_primary">#ffffffff</color>
+    <color name="mtx_text_color_secondary">#89ffffff</color>
 
     <!-- Face and fingerprint enrollment -->
     <color name="biometric_enroll_intro_color_bar">#5bb974</color>
