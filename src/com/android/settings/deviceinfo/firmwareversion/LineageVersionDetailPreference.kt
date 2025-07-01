@@ -41,10 +41,10 @@ class LineageVersionDetailPreference :
     private val hits = LongArray(ACTIVITY_TRIGGER_COUNT)
 
     override val key: String
-        get() = "lineage_version"
+        get() = "ares_version"
 
     override val title: Int
-        get() = org.lineageos.platform.internal.R.string.lineage_version
+        get() = com.android.settings.R.string.ares_version
 
     override val indexable
         get() = false
@@ -102,10 +102,10 @@ class LineageVersionDetailPreference :
         const val ACTIVITY_TRIGGER_COUNT = 3
         const val DELAY_TIMER_MILLIS = 500L
 
-        const val LINEAGE_VERSION_PROPERTY: String = "ro.crdroid.build.version"
+        const val LINEAGE_VERSION_PROPERTY: String = "ro.ares.version"
 
         const val PLATLOGO_PACKAGE_NAME: String = "com.crdroid.settings"
-        const val PLATLOGO_ACTIVITY_CLASS: String = PLATLOGO_PACKAGE_NAME + ".fragments.about.DonateActivity"
+        const val PLATLOGO_ACTIVITY_CLASS: String = PLATLOGO_PACKAGE_NAME + ".crDroidSettingsLayout"
     }
 }
 // LINT.ThenChange(LineageVersionDetailPreferenceController.java)

@@ -35,16 +35,25 @@
         <!-- Device name -->
         <com.android.settings.widget.ValidatedEditTextPreference
             android:key="device_name"
-            android:order="1"
+            android:order="-5"
             android:title="@string/my_device_info_device_name_preference_title"
             android:summary="@string/summary_placeholder"
             settings:controller="com.android.settings.deviceinfo.DeviceNamePreferenceController"
             settings:enableCopying="true"/>
 
+        <!-- Android version -->
+        <Preference
+            android:key="firmware_version"
+            android:order="1"
+            android:title="@string/firmware_version"
+            android:summary="@string/summary_placeholder"
+            android:fragment="com.android.settings.deviceinfo.firmwareversion.FirmwareVersionSettings"
+            settings:controller="com.android.settings.deviceinfo.firmwareversion.FirmwareVersionPreferenceController"/>
+
         <!-- Account name -->
         <Preference
             android:key="branded_account"
-            android:order="2"
+            android:order="4"
             android:title="@string/my_device_info_account_preference_title"
             android:summary="@string/summary_placeholder"
             settings:enableCopying="true"
@@ -53,39 +62,12 @@
         <!-- Phone number -->
         <Preference
             android:key="phone_number"
-            android:order="3"
+            android:order="5"
             android:title="@string/status_number"
             android:summary="@string/summary_placeholder"
             settings:isPreferenceVisible="@bool/config_show_sim_info"
             settings:controller="com.android.settings.deviceinfo.PhoneNumberPreferenceController"
             settings:enableCopying="true"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:key="legal_category"
-        android:title="@string/my_device_info_legal_category_title">
-
-        <!-- Legal information -->
-        <Preference
-            android:key="legal_container"
-            android:order="15"
-            android:title="@string/legal_information"
-            android:fragment="com.android.settings.LegalSettings"/>
-
-        <!-- Regulatory labels -->
-        <Preference
-            android:key="regulatory_info"
-            android:order="16"
-            android:title="@string/regulatory_labels">
-            <intent android:action="android.settings.SHOW_REGULATORY_INFO"
-                    android:targetPackage="${applicationId}"/>
-        </Preference>
-
-        <!-- Safety & regulatory manual -->
-        <Preference
-            android:key="safety_info"
-            android:order="18"
-            android:title="@string/safety_and_regulatory_info"/>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -147,23 +129,6 @@
             settings:isPreferenceVisible="@bool/config_show_sim_info"
             settings:controller="com.android.settings.deviceinfo.imei.ImeiInfoPreferenceController"/>
 
-        <!-- Android version -->
-        <Preference
-            android:key="firmware_version"
-            android:order="42"
-            android:title="@string/firmware_version"
-            android:summary="@string/summary_placeholder"
-            android:fragment="com.android.settings.deviceinfo.firmwareversion.FirmwareVersionSettings"
-            settings:controller="com.android.settings.deviceinfo.firmwareversion.FirmwareVersionPreferenceController"/>
-
-        <!-- Lineage version -->
-        <Preference
-            android:key="lineage_os_version"
-            android:order="43"
-            android:title="@*lineageos.platform:string/lineage_version"
-            android:summary="@string/summary_placeholder"
-            settings:enableCopying="true"
-            settings:controller="com.android.settings.deviceinfo.firmwareversion.LineageVersionDetailPreferenceController"/>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -253,6 +218,33 @@
             android:summary="@string/summary_placeholder"
             settings:enableCopying="true"
             settings:controller="com.android.settings.deviceinfo.BuildNumberPreferenceController"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="legal_category"
+        android:title="@string/my_device_info_legal_category_title">
+
+        <!-- Legal information -->
+        <Preference
+            android:key="legal_container"
+            android:order="90"
+            android:title="@string/legal_information"
+            android:fragment="com.android.settings.LegalSettings"/>
+
+        <!-- Regulatory labels -->
+        <Preference
+            android:key="regulatory_info"
+            android:order="95"
+            android:title="@string/regulatory_labels">
+            <intent android:action="android.settings.SHOW_REGULATORY_INFO"
+                    android:targetPackage="${applicationId}"/>
+        </Preference>
+
+        <!-- Safety & regulatory manual -->
+        <Preference
+            android:key="safety_info"
+            android:order="98"
+            android:title="@string/safety_and_regulatory_info"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
