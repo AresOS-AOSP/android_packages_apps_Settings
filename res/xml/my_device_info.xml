@@ -50,15 +50,6 @@
             android:fragment="com.android.settings.deviceinfo.firmwareversion.FirmwareVersionSettings"
             settings:controller="com.android.settings.deviceinfo.firmwareversion.FirmwareVersionPreferenceController"/>
 
-        <!-- Lineage version -->
-        <Preference
-            android:key="lineage_os_version"
-            android:order="2"
-            android:title="@string/ares_version"
-            android:summary="@string/summary_placeholder"
-            settings:enableCopying="true"
-            settings:controller="com.android.settings.deviceinfo.firmwareversion.LineageVersionDetailPreferenceController"/>
-
         <!-- Account name -->
         <Preference
             android:key="branded_account"
