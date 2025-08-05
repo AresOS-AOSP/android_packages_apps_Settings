@@ -238,6 +238,15 @@
             settings:controller="com.android.settings.accounts.TopLevelAccountEntryPreferenceController"/>
 
         <com.android.settings.widget.HomepagePreference
+            android:icon="@drawable/ic_digital_wellbeing"
+            android:key="top_level_wb"
+            android:order="-5"
+            android:title="@string/wellbeing_title"
+            android:summary="@string/wellbeing_summary"
+            settings:highlightableMenuKey="top_level_wellbeing"
+            settings:controller="com.android.settings.home.WellbeingPreferenceController"/>
+
+        <com.android.settings.widget.HomepagePreference
             android:key="top_level_supervision"
             android:title="@string/supervision_settings_title"
             android:summary="@string/supervision_settings_summary"
