@@ -196,4 +196,7 @@
     <string name="ares_processor_code_message">Unknown</string>
     <string name="ares_battery_type_message">Unknown</string>
     <string name="ares_screen_message">Unknown</string>
+
+    <string name="wellbeing_title">Digital wellbeing</string>
+    <string name="wellbeing_summary">Digital wellbeing and parental controls</string>
 </resources>
