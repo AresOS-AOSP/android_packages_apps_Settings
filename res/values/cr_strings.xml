@@ -31,4 +31,20 @@
     <string name="smart_battery_a11y_collapse_label">Collapse, Adaptive Battery</string>
     <string name="smart_battery_title">Adaptive Battery</string>
     <string name="unified_battery_saver_page_intro">Save power to help your phone battery last longer between charges</string>
+
+    <!-- Refresh rate -->
+    <string name="refresh_rate_settings_title">Display Refresh Rate</string>
+    <string name="refresh_rate_dynamic">Dynamic</string>
+    <string name="refresh_rate_high">High</string>
+    <string name="refresh_rate_standard">Standard</string>
+    <string name="refresh_rate_dynamic_summary">
+        Dynamically switch refresh rate according to content to optimize battery life.
+    </string>
+    <string name="refresh_rate_summary">A maximum refresh rate of</string>
+    <string name="refresh_rate_high_summary">for smoother scrolling and animations.</string>
+    <string name="refresh_rate_standard_summary">for better battery life.</string>
+    <string name="aod_limit_refresh_rate_title">Limit refresh rate on lock screen</string>
+    <string name="aod_limit_refresh_rate_summary">Cap the refresh rate to 60Hz when the lock screen is visible to save battery.</string>
+    <string name="per_app_refresh_rate_title">Per-app refresh rate</string>
+    <string name="per_app_refresh_rate_summary">Set a custom refresh rate for specific applications.</string>
 </resources>

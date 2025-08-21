@@ -140,8 +140,9 @@ android_library {
         "org.lineageos.platform.internal",
         "LineagePreferenceLib",
         "SystemUISharedLib",
-
         "commonutils",
+        // Axion dependencies
+        "ax_compose",
     ],
 
     plugins: [
