@@ -58,6 +58,8 @@ import com.android.settingslib.drawer.Tile;
 import com.android.settingslib.search.SearchIndexable;
 import com.android.settingslib.widget.SettingsThemeHelper;
 
+import com.android.internal.util.crdroid.VibrationUtils;
+
 import java.util.List;
 
 @SearchIndexable(forTarget = MOBILE)
@@ -124,6 +126,9 @@ public class TopLevelSettings extends DashboardFragment implements SplitLayoutLi
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
+        if (preference != null && preference.getKey() != null) {
+            VibrationUtils.triggerVibration(getContext(), 3);
+        }
         if (isDuplicateClick(preference)) {
             return true;
         }
