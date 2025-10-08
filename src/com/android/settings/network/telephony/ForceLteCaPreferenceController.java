@@ -121,7 +121,7 @@ public class ForceLteCaPreferenceController extends TelephonyTogglePreferenceCon
 
     @Override
     public boolean isChecked() {
-        return SystemProperties.getBoolean(KEY_PROP, false);
+        return SystemProperties.getBoolean(KEY_PROP, true);
     }
 
     private boolean isUserControlAllowed() {
