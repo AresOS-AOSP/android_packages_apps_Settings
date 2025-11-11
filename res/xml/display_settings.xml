@@ -200,6 +200,12 @@
             android:summary="@string/ltpo_features_summary"
             settings:controller="com.android.settings.display.LtpoFeaturesPreferenceController" />
 
+        <SwitchPreference
+            android:key="disable_vrr"
+            android:title="@string/disable_vrr_title"
+            android:summary="@string/disable_vrr_summary"
+            settings:controller="com.android.settings.display.VrrPreferenceController"/>
+
         <SwitchPreferenceCompat
             android:key="show_operator_name"
             android:title="@string/show_operator_name_title"

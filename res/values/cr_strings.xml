@@ -95,4 +95,8 @@
     <!-- LTPO features -->
     <string name="ltpo_features_title">Enable LTPO features</string>
     <string name="ltpo_features_summary">Enables device-specific adaptive idle and frame rate features for improving efficiency</string>
+
+    <!-- Disable VRR -->
+    <string name="disable_vrr_title">Disable VRR</string>
+    <string name="disable_vrr_summary">Do not use content based refresh rate switching\nWill harm battery life</string>
 </resources>
