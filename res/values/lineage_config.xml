@@ -38,6 +38,9 @@
     <!-- Show LTPO features option -->
     <bool name="config_supportLtpoFeatures" translatable="false">false</bool>
 
+    <!-- Hide disable VRR option -->
+    <bool name="config_disableVrrSetting" translatable="false">false</bool>
+
     <!-- Show battery Maximum Capacity -->
     <bool name="config_show_battery_maximum_capacity">true</bool>
 

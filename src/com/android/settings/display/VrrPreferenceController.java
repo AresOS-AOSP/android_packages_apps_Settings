@@ -53,7 +53,8 @@ public class VrrPreferenceController extends TogglePreferenceController {
         try {
             hasVRR = SurfaceFlingerProperties.use_content_detection_for_refresh_rate().orElseThrow();
         } catch (Exception ignored) { }
-        return hasVRR ? AVAILABLE : UNSUPPORTED_ON_DEVICE;
+        return hasVRR ? (mContext.getResources().getBoolean(R.bool.config_disableVrrSetting)
+                        ? UNSUPPORTED_ON_DEVICE : AVAILABLE) : UNSUPPORTED_ON_DEVICE;
     }
 
     @Override
