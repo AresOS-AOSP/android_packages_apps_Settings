@@ -30,46 +30,47 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -105,9 +106,11 @@ class RefreshRateSettings : Fragment() {
         activity?.title = getString(R.string.refresh_rate_settings_title)
     }
 
+    @OptIn(ExperimentalMaterial3ExpressiveApi::class)
     @Composable
     fun RefreshRateScreen() {
         var currentPage by remember { mutableStateOf(Page.MAIN) }
+        val motionScheme = MaterialTheme.motionScheme
         
         BackHandler(enabled = currentPage != Page.MAIN) {
             currentPage = Page.MAIN
@@ -118,18 +121,18 @@ class RefreshRateSettings : Fragment() {
             transitionSpec = {
                 if (targetState == Page.PER_APP) {
                     slideIntoContainer(
-                        towards = SlideDirection.Left,
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
                         animationSpec = tween(300)
                     ) togetherWith slideOutOfContainer(
-                        towards = SlideDirection.Left,
+                        towards = AnimatedContentTransitionScope.SlideDirection.Left,
                         animationSpec = tween(300)
                     )
                 } else {
                     slideIntoContainer(
-                        towards = SlideDirection.Right,
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
                         animationSpec = tween(300)
                     ) togetherWith slideOutOfContainer(
-                        towards = SlideDirection.Right,
+                        towards = AnimatedContentTransitionScope.SlideDirection.Right,
                         animationSpec = tween(300)
                     )
                 }
@@ -137,19 +140,20 @@ class RefreshRateSettings : Fragment() {
             label = "ScreenTransition"
         ) { page ->
             when (page) {
-                Page.MAIN -> RefreshRateSettingsScreen(onNavigateToPerApp = { currentPage = Page.PER_APP })
+                Page.MAIN -> RefreshRateMainScreen(onNavigateToPerApp = { currentPage = Page.PER_APP })
                 Page.PER_APP -> PerAppRefreshRateScreen(onBack = { currentPage = Page.MAIN })
             }
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
     @Composable
-    fun RefreshRateSettingsScreen(onNavigateToPerApp: () -> Unit) {
+    fun RefreshRateMainScreen(onNavigateToPerApp: () -> Unit) {
         val context = LocalContext.current
         val cr = context.contentResolver
         
         var selectedMode by remember { 
-            mutableStateOf(Settings.Global.getInt(cr, "display_refresh_rate_mode", 0)) 
+            mutableIntStateOf(Settings.Global.getInt(cr, "display_refresh_rate_mode", 0)) 
         }
         
         var lockscreenLimitEnabled by remember {
@@ -159,69 +163,69 @@ class RefreshRateSettings : Fragment() {
         val modes = remember { getModes(context) }
 
         Scaffold(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         ) { paddingValues ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = 32.dp)
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    RefreshRateIllustration(modes)
+                    RefreshRateIllustrationCard(modes)
                 }
 
                 item {
-                    SettingsGroupCard {
-                        modes.forEachIndexed { index, pair ->
-                            val (hz, label) = pair
-                            SettingsRadioItem(
-                                title = label,
-                                selected = selectedMode == hz,
-                                showDivider = index < modes.size - 1,
+                    RefreshRateSelector(
+                        modes = modes,
+                        selectedMode = selectedMode,
+                        onModeSelected = { mode ->
+                            selectedMode = mode
+                            Settings.Global.putInt(cr, "display_refresh_rate_mode", mode)
+                        }
+                    )
+                }
+
+                item {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.extraLarge,
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceBright
+                        )
+                    ) {
+                        Column {
+                            ModernSwitchItem(
+                                title = stringResource(R.string.aod_limit_refresh_rate_title),
+                                summary = stringResource(R.string.aod_limit_refresh_rate_summary),
+                                checked = lockscreenLimitEnabled,
+                                icon = Icons.Default.LockClock,
+                                showDivider = true,
                                 onClick = {
-                                    selectedMode = hz
-                                    Settings.Global.putInt(cr, "display_refresh_rate_mode", hz)
+                                    lockscreenLimitEnabled = !lockscreenLimitEnabled
+                                    Settings.System.putInt(cr, "lockscreen_limit_refresh_rate", 
+                                        if (lockscreenLimitEnabled) 1 else 0)
                                 }
+                            )
+                            ModernNavigationItem(
+                                title = stringResource(R.string.per_app_refresh_rate_title),
+                                summary = stringResource(R.string.per_app_refresh_rate_summary),
+                                icon = Icons.Default.Apps,
+                                onClick = onNavigateToPerApp
                             )
                         }
                     }
                 }
 
                 item {
-                    Text(
-                        text = stringResource(R.string.category_name_display_controls),
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(start = 8.dp, top = 8.dp)
-                    )
-                }
-
-                item {
-                    SettingsGroupCard {
-                        SettingsSwitchItem(
-                            title = stringResource(R.string.aod_limit_refresh_rate_title),
-                            summary = stringResource(R.string.aod_limit_refresh_rate_summary),
-                            checked = lockscreenLimitEnabled,
-                            showDivider = true,
-                            onClick = {
-                                lockscreenLimitEnabled = !lockscreenLimitEnabled
-                                Settings.System.putInt(cr, "lockscreen_limit_refresh_rate", if (lockscreenLimitEnabled) 1 else 0)
-                            }
-                        )
-                        SettingsNavigationItem(
-                            title = stringResource(R.string.per_app_refresh_rate_title),
-                            summary = stringResource(R.string.per_app_refresh_rate_summary),
-                            onClick = onNavigateToPerApp
-                        )
-                    }
+                    Spacer(modifier = Modifier.height(120.dp))
                 }
             }
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
     @Composable
     fun PerAppRefreshRateScreen(onBack: () -> Unit) {
         val context = LocalContext.current
@@ -270,311 +274,212 @@ class RefreshRateSettings : Fragment() {
         val modes = remember { getModes(context) }
 
         Scaffold(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            topBar = {
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        ) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
                 Surface(
-                    color = MaterialTheme.colorScheme.surfaceContainer,
-                    modifier = Modifier.statusBarsPadding()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                 ) {
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = { searchQuery = it },
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp),
-                        placeholder = { Text("Search apps...") },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                        shape = RoundedCornerShape(24.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedContainerColor = MaterialTheme.colorScheme.surfaceBright,
-                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceBright
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                    )
-                }
-            }
-        ) { paddingValues ->
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues),
-                    contentPadding = PaddingValues(bottom = 32.dp)
-                ) {
-                    items(filteredApps) { app ->
-                        val appConfig = perAppConfig[app.packageName]
-                        AppItem(
-                            app = app,
-                            config = appConfig,
-                            onClick = { selectedApp = app }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            placeholder = { Text("Search apps...") },
+                            modifier = Modifier.weight(1f),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent
+                            ),
+                            singleLine = true
                         )
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { searchQuery = "" }) {
+                                Icon(Icons.Default.Clear, "Clear")
+                            }
+                        }
+                    }
+                }
+
+                if (isLoading) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                "Loading apps...",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(filteredApps) { app ->
+                            val appConfig = perAppConfig[app.packageName]
+                            ModernAppItem(
+                                app = app,
+                                config = appConfig,
+                                onClick = { selectedApp = app }
+                            )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
             }
         }
 
         if (selectedApp != null) {
-            val appConfig = perAppConfig[selectedApp!!.packageName]
-            var tempRate by remember { mutableStateOf(appConfig?.rate ?: 0) }
-
-            AlertDialog(
-                onDismissRequest = { selectedApp = null },
-                title = { Text(selectedApp!!.label) },
-                text = {
-                    Column {
-                        SettingsRadioItem(
-                            title = "Default",
-                            selected = tempRate == 0,
-                            showDivider = true,
-                            onClick = {
-                                perAppConfig = perAppConfig.toMutableMap().apply { remove(selectedApp!!.packageName) }
-                                savePerAppConfig(cr, perAppConfig)
-                                selectedApp = null
-                            }
-                        )
-                        
-                        modes.filter { it.first > 0 }.forEachIndexed { index, pair ->
-                            val (hz, label) = pair
-                            SettingsRadioItem(
-                                title = label,
-                                selected = tempRate == hz,
-                                showDivider = index < modes.size - 2,
-                                onClick = { tempRate = hz }
-                            )
+            AppRateDialog(
+                app = selectedApp!!,
+                modes = modes,
+                currentConfig = perAppConfig[selectedApp!!.packageName],
+                onDismiss = { selectedApp = null },
+                onConfirm = { rate ->
+                    perAppConfig = perAppConfig.toMutableMap().apply {
+                        if (rate == 0) {
+                            remove(selectedApp!!.packageName)
+                        } else {
+                            put(selectedApp!!.packageName, AppConfig(rate))
                         }
                     }
-                },
-                confirmButton = {
-                    if (tempRate > 0) {
-                        TextButton(onClick = {
-                            perAppConfig = perAppConfig.toMutableMap().apply {
-                                put(selectedApp!!.packageName, AppConfig(tempRate))
-                            }
-                            savePerAppConfig(cr, perAppConfig)
-                            selectedApp = null
-                        }) {
-                            Text("Save")
-                        }
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { selectedApp = null }) {
-                        Text("Cancel")
-                    }
-                },
-                shape = RoundedCornerShape(28.dp),
-                containerColor = MaterialTheme.colorScheme.surfaceBright
+                    savePerAppConfig(cr, perAppConfig)
+                    selectedApp = null
+                }
             )
         }
     }
 
-    data class AppInfo(val packageName: String, val label: String, val icon: Drawable)
-    data class AppConfig(val rate: Int)
-
     @Composable
-    fun AppItem(app: AppInfo, config: AppConfig?, onClick: () -> Unit) {
-        Column(modifier = Modifier.clickable(onClick = onClick)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(72.dp)
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    bitmap = app.icon.toBitmap().asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = app.label,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        text = app.packageName,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = if (config == null) "Default" else "${config.rate}Hz",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = if (config == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary,
-                        fontWeight = if (config == null) FontWeight.Normal else FontWeight.Bold
-                    )
-                }
-            }
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                thickness = 0.5.dp,
-                color = MaterialTheme.colorScheme.surfaceContainer
-            )
-        }
-    }
-
-    private fun getModes(context: Context): List<Pair<Int, String>> {
-        val modes = mutableListOf<Pair<Int, String>>()
-        val customList = SystemProperties.get("persist.sys.display_refresh_rates_list", "")
-        val refreshRates = if (customList.isNotEmpty()) {
-            customList.split(",").mapNotNull { it.trim().toFloatOrNull()?.toInt() }.distinct().sorted()
-        } else {
-            val displayManager = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
-            val display = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
-            display?.supportedModes?.map { it.refreshRate.toInt() }?.distinct()?.sorted() ?: emptyList()
-        }
-        val supportsDynamic = SystemProperties.getBoolean(
-            "ro.surface_flinger.use_content_detection_for_refresh_rate", false
-        )
-        if (supportsDynamic) {
-            modes.add(0 to context.getString(R.string.refresh_rate_dynamic))
-        }
-        refreshRates.forEach { hz ->
-            modes.add(hz to "${hz}Hz")
-        }
-        return modes
-    }
-
-    private fun getPerAppConfig(cr: ContentResolver): Map<String, AppConfig> {
-        val config = Settings.System.getString(cr, "per_app_refresh_rate") ?: return emptyMap()
-        if (config.isEmpty()) return emptyMap()
-        return config.split(",").mapNotNull {
-            val parts = it.split(":")
-            if (parts.size >= 2) {
-                val pkg = parts[0]
-                val rate = parts[1].toIntOrNull() ?: 0
-                pkg to AppConfig(rate)
-            } else null
-        }.toMap()
-    }
-
-    private fun savePerAppConfig(cr: ContentResolver, config: Map<String, AppConfig>) {
-        val configString = config.entries.joinToString(",") { 
-            "${it.key}:${it.value.rate}" 
-        }
-        Settings.System.putString(cr, "per_app_refresh_rate", configString)
-    }
-
-    @Composable
-    fun SettingsGroupCard(content: @Composable ColumnScope.() -> Unit) {
+    private fun RefreshRateSelector(
+        modes: List<Pair<Int, String>>,
+        selectedMode: Int,
+        onModeSelected: (Int) -> Unit
+    ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
+            shape = MaterialTheme.shapes.extraLarge,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceBright
             )
         ) {
-            Column(content = content)
+            Column(modifier = Modifier.padding(20.dp)) {
+                Text(
+                    text = "Refresh Rate Mode",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    modes.forEach { (hz, label) ->
+                        RefreshRateOption(
+                            label = label,
+                            isSelected = selectedMode == hz,
+                            onClick = { onModeSelected(hz) }
+                        )
+                    }
+                }
+            }
         }
     }
 
     @Composable
-    fun SettingsRadioItem(
-        title: String,
-        selected: Boolean,
-        showDivider: Boolean,
+    private fun RefreshRateOption(
+        label: String,
+        isSelected: Boolean,
         onClick: () -> Unit
     ) {
-        Column(modifier = Modifier.clickable(onClick = onClick)) {
+        Surface(
+            onClick = onClick,
+            modifier = Modifier.fillMaxWidth(),
+            shape = if (isSelected) 
+                RoundedCornerShape(24.dp)
+            else 
+                RoundedCornerShape(16.dp),
+            color = if (isSelected) 
+                MaterialTheme.colorScheme.primaryContainer
+            else 
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            border = if (isSelected) 
+                BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+            else null
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp)
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = title,
+                    text = label,
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f)
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    color = if (isSelected) 
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    else 
+                        MaterialTheme.colorScheme.onSurface
                 )
-                RadioButton(
-                    selected = selected,
-                    onClick = null
-                )
-            }
-            if (showDivider) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.surfaceContainer
-                )
+                
+                if (isSelected) {
+                    Icon(
+                        Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
         }
     }
 
     @Composable
-    fun SettingsSwitchItem(
-        title: String,
-        summary: String,
-        checked: Boolean,
-        showDivider: Boolean = false,
-        onClick: () -> Unit
-    ) {
-        Column {
-            Surface(
-                onClick = onClick,
-                color = Color.Transparent
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = title,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = summary,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            lineHeight = 16.sp
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Switch(
-                        checked = checked,
-                        onCheckedChange = null,
-                        thumbContent = {
-                            Icon(
-                                imageVector = if (checked) Icons.Filled.Check else Icons.Filled.Close,
-                                contentDescription = null,
-                                modifier = Modifier.size(SwitchDefaults.IconSize),
-                            )
-                        }
-                    )
-                }
-            }
-            if (showDivider) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                    thickness = 0.5.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-                )
+    private fun RefreshRateIllustrationCard(modes: List<Pair<Int, String>>) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.extraLarge,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceBright
+            )
+        ) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                RefreshRateIllustration(modes)
             }
         }
     }
@@ -603,20 +508,26 @@ class RefreshRateSettings : Fragment() {
         val surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
+            Text(
+                text = "Visual Comparison",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 RefreshRatePreviewIllustration(
                     modifier = Modifier.weight(1f),
                     label = "${maxRate.toInt()}Hz",
-                    subLabel = "Smooth Scrolling",
+                    subLabel = "Smooth",
                     progress = scrollOffset,
                     isHighRate = true,
                     rateRatio = 1f,
@@ -660,7 +571,7 @@ class RefreshRateSettings : Fragment() {
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
+                shape = MaterialTheme.shapes.large,
                 colors = CardDefaults.cardColors(containerColor = surfaceColor),
                 border = BorderStroke(2.dp, outlineColor)
             ) {
@@ -731,35 +642,381 @@ class RefreshRateSettings : Fragment() {
         }
     }
 
+    @OptIn(ExperimentalMaterial3ExpressiveApi::class)
     @Composable
-    fun SettingsNavigationItem(
+    private fun ModernSwitchItem(
         title: String,
         summary: String,
+        checked: Boolean,
+        icon: androidx.compose.ui.graphics.vector.ImageVector,
+        showDivider: Boolean = false,
         onClick: () -> Unit
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onClick)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = summary,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+        Column {
+            Surface(
+                onClick = onClick,
+                color = Color.Transparent,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        modifier = Modifier.size(40.dp),
+                        shape = MaterialTheme.shapes.medium,
+                        color = if (checked) 
+                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+                        else
+                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null,
+                                tint = if (checked) 
+                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                else
+                                    MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.width(16.dp))
+                    
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = summary,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            lineHeight = 16.sp
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.width(16.dp))
+                    
+                    Switch(
+                        checked = checked,
+                        onCheckedChange = null,
+                        thumbContent = {
+                            Crossfade(
+                                targetState = checked,
+                                animationSpec = MaterialTheme.motionScheme.slowEffectsSpec(),
+                                label = "switch_icon"
+                            ) { isChecked ->
+                                Icon(
+                                    imageVector = if (isChecked) Icons.Filled.Check else Icons.Filled.Close,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize)
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+            if (showDivider) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    thickness = 0.5.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
                 )
             }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
+    }
+
+    @Composable
+    private fun ModernNavigationItem(
+        title: String,
+        summary: String,
+        icon: androidx.compose.ui.graphics.vector.ImageVector,
+        onClick: () -> Unit
+    ) {
+        Surface(
+            onClick = onClick,
+            color = Color.Transparent,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(
+                    modifier = Modifier.size(40.dp),
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+                
+                Spacer(modifier = Modifier.width(16.dp))
+                
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = summary,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 16.sp
+                    )
+                }
+                
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun ModernAppItem(
+        app: AppInfo,
+        config: AppConfig?,
+        onClick: () -> Unit
+    ) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.large,
+            colors = CardDefaults.cardColors(
+                containerColor = if (config != null) 
+                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+                else 
+                    MaterialTheme.colorScheme.surfaceBright
+            ),
+            onClick = onClick
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    bitmap = app.icon.toBitmap().asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                )
+                
+                Spacer(modifier = Modifier.width(16.dp))
+                
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = app.label,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = app.packageName,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    color = if (config != null) 
+                        MaterialTheme.colorScheme.primary
+                    else 
+                        MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Text(
+                        text = if (config == null) "Default" else "${config.rate}Hz",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = if (config != null) 
+                            MaterialTheme.colorScheme.onPrimary
+                        else 
+                            MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun AppRateDialog(
+        app: AppInfo,
+        modes: List<Pair<Int, String>>,
+        currentConfig: AppConfig?,
+        onDismiss: () -> Unit,
+        onConfirm: (Int) -> Unit
+    ) {
+        var selectedRate by remember { mutableIntStateOf(currentConfig?.rate ?: 0) }
+
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            icon = {
+                Image(
+                    bitmap = app.icon.toBitmap().asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                )
+            },
+            title = { 
+                Text(
+                    app.label,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                ) 
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    RateOption(
+                        label = "Default",
+                        isSelected = selectedRate == 0,
+                        onClick = { selectedRate = 0 }
+                    )
+                    
+                    modes.filter { it.first > 0 }.forEach { (hz, label) ->
+                        RateOption(
+                            label = label,
+                            isSelected = selectedRate == hz,
+                            onClick = { selectedRate = hz }
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { onConfirm(selectedRate) },
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Text("Apply")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = onDismiss,
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Text("Cancel")
+                }
+            },
+            shape = MaterialTheme.shapes.extraLarge
+        )
+    }
+
+    @Composable
+    private fun RateOption(
+        label: String,
+        isSelected: Boolean,
+        onClick: () -> Unit
+    ) {
+        Surface(
+            onClick = onClick,
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
+            color = if (isSelected) 
+                MaterialTheme.colorScheme.primaryContainer
+            else 
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            border = if (isSelected) 
+                BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
+            else null
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    color = if (isSelected) 
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    else 
+                        MaterialTheme.colorScheme.onSurface
+                )
+                
+                if (isSelected) {
+                    Icon(
+                        Icons.Default.CheckCircle,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
+    }
+
+    data class AppInfo(val packageName: String, val label: String, val icon: Drawable)
+    data class AppConfig(val rate: Int)
+
+    private fun getModes(context: Context): List<Pair<Int, String>> {
+        val modes = mutableListOf<Pair<Int, String>>()
+        val customList = SystemProperties.get("persist.sys.display_refresh_rates_list", "")
+        val refreshRates = if (customList.isNotEmpty()) {
+            customList.split(",").mapNotNull { it.trim().toFloatOrNull()?.toInt() }.distinct().sorted()
+        } else {
+            val displayManager = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+            val display = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
+            display?.supportedModes?.map { it.refreshRate.toInt() }?.distinct()?.sorted() ?: emptyList()
+        }
+        val supportsDynamic = SystemProperties.getBoolean(
+            "ro.surface_flinger.use_content_detection_for_refresh_rate", false
+        )
+        if (supportsDynamic) {
+            modes.add(0 to context.getString(R.string.refresh_rate_dynamic))
+        }
+        refreshRates.forEach { hz ->
+            modes.add(hz to "${hz}Hz")
+        }
+        return modes
+    }
+
+    private fun getPerAppConfig(cr: ContentResolver): Map<String, AppConfig> {
+        val config = Settings.System.getString(cr, "per_app_refresh_rate") ?: return emptyMap()
+        if (config.isEmpty()) return emptyMap()
+        return config.split(",").mapNotNull {
+            val parts = it.split(":")
+            if (parts.size >= 2) {
+                val pkg = parts[0]
+                val rate = parts[1].toIntOrNull() ?: 0
+                pkg to AppConfig(rate)
+            } else null
+        }.toMap()
+    }
+
+    private fun savePerAppConfig(cr: ContentResolver, config: Map<String, AppConfig>) {
+        val configString = config.entries.joinToString(",") { 
+            "${it.key}:${it.value.rate}" 
+        }
+        Settings.System.putString(cr, "per_app_refresh_rate", configString)
     }
 }
