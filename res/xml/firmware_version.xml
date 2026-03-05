@@ -21,12 +21,6 @@
     android:title="@string/firmware_version"
     settings:keywords="@string/keywords_android_version">
 
-    <!-- crDroid logo -->
-    <com.android.settingslib.widget.LayoutPreference
-        android:layout="@layout/crdroid_logo"
-        android:key="crdroid_logo"
-        android:selectable="false" />
-
     <!-- Device name -->
     <Preference
         android:key="about_device_name"
