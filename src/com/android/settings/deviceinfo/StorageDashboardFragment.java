@@ -49,6 +49,7 @@ import com.android.settings.deviceinfo.storage.NonCurrentUserController;
 import com.android.settings.deviceinfo.storage.StorageAsyncLoader;
 import com.android.settings.deviceinfo.storage.StorageCacheHelper;
 import com.android.settings.deviceinfo.storage.StorageEntry;
+import com.android.settings.deviceinfo.storage.StorageHealthPreferenceController;
 import com.android.settings.deviceinfo.storage.StorageItemPreferenceController;
 import com.android.settings.deviceinfo.storage.StorageSelectionPreferenceController;
 import com.android.settings.deviceinfo.storage.StorageUsageProgressBarPreferenceController;
@@ -85,6 +86,7 @@ public class StorageDashboardFragment extends DashboardFragment
         LoaderManager.LoaderCallbacks<SparseArray<StorageAsyncLoader.StorageResult>> {
     private static final String TAG = "StorageDashboardFrag";
     private static final String SUMMARY_PREF_KEY = "storage_summary";
+    private static final String STORAGE_HEALTH_PREF_KEY = "storage_health";
     private static final String SELECTED_STORAGE_ENTRY_KEY = "selected_storage_entry_key";
     private static final String TARGET_PREFERENCE_GROUP_KEY = "pref_non_current_users";
     private static final int STORAGE_JOB_ID = 0;
@@ -102,6 +104,7 @@ public class StorageDashboardFragment extends DashboardFragment
     private VolumeOptionMenuController mOptionMenuController;
     private StorageSelectionPreferenceController mStorageSelectionController;
     private StorageUsageProgressBarPreferenceController mStorageUsageProgressBarController;
+    private StorageHealthPreferenceController mStorageHealthPreferenceController;
     private List<NonCurrentUserController> mNonCurrentUsers;
     private boolean mIsWorkProfile;
     private int mUserId;
@@ -229,6 +232,7 @@ public class StorageDashboardFragment extends DashboardFragment
         mStorageSelectionController.setStorageEntries(mStorageEntries);
         mStorageSelectionController.setSelectedStorageEntry(mSelectedStorageEntry);
         mStorageUsageProgressBarController.setSelectedStorageEntry(mSelectedStorageEntry);
+        mStorageHealthPreferenceController.setSelectedStorageEntry(mSelectedStorageEntry);
 
         mOptionMenuController.setSelectedStorageEntry(mSelectedStorageEntry);
         getActivity().invalidateOptionsMenu();
@@ -327,6 +331,7 @@ public class StorageDashboardFragment extends DashboardFragment
             }
         });
         mStorageUsageProgressBarController = use(StorageUsageProgressBarPreferenceController.class);
+        mStorageHealthPreferenceController = use(StorageHealthPreferenceController.class);
 
         ManageStoragePreferenceController manageStoragePreferenceController =
                 use(ManageStoragePreferenceController.class);
@@ -467,6 +472,8 @@ public class StorageDashboardFragment extends DashboardFragment
                     final List<AbstractPreferenceController> controllers = new ArrayList<>();
                     controllers.add(new StorageItemPreferenceController(context, null /* host */,
                             null /* volume */, new StorageManagerVolumeProvider(sm)));
+                    controllers.add(
+                            new StorageHealthPreferenceController(context, STORAGE_HEALTH_PREF_KEY));
                     controllers.addAll(NonCurrentUserController.getNonCurrentUserControllers(
                             context, userManager));
                     return controllers;

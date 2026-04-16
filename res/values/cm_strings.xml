@@ -186,6 +186,19 @@
     <string name="battery_maximum_capacity_summary">%1$d mAh (%2$d%%)</string>
     <string name="battery_maximum_capacity_not_available" translatable="false">@string/battery_cycle_count_not_available</string>
 
+    <!-- Storage Health -->
+    <string name="storage_health">Storage health</string>
+    <string name="storage_health_status_title">Status</string>
+    <string name="storage_health_remaining_lifetime">Remaining lifetime</string>
+    <string name="storage_health_lifetime_summary">%1$d%% lifetime remaining</string>
+    <string name="storage_health_lifetime_value">%1$d%%</string>
+    <string name="storage_health_status_good">Good</string>
+    <string name="storage_health_status_normal">Normal</string>
+    <string name="storage_health_status_limited">Limited</string>
+    <string name="storage_health_status_critical">Critical</string>
+    <string name="storage_health_status_unknown">Unknown</string>
+    <string name="storage_health_footer">Based on internal flash wear reported by device firmware. Value may update in 10% steps and can be unavailable on some devices.</string>
+
     <!-- Model and Hardware -->
     <string name="ares_version">AresOS version</string>
     <string name="ares_device_title">Device</string>

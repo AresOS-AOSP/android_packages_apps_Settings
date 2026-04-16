@@ -43,6 +43,7 @@ import com.android.settings.deviceinfo.storage.NonCurrentUserController;
 import com.android.settings.deviceinfo.storage.StorageAsyncLoader;
 import com.android.settings.deviceinfo.storage.StorageCacheHelper;
 import com.android.settings.deviceinfo.storage.StorageEntry;
+import com.android.settings.deviceinfo.storage.StorageHealthPreferenceController;
 import com.android.settings.deviceinfo.storage.StorageItemPreferenceController;
 import com.android.settings.deviceinfo.storage.UserIconLoader;
 import com.android.settings.deviceinfo.storage.VolumeSizesLoader;
@@ -85,6 +86,7 @@ public class StorageCategoryFragment extends DashboardFragment
     private SparseArray<StorageAsyncLoader.StorageResult> mAppsResult;
 
     private StorageItemPreferenceController mPreferenceController;
+    private StorageHealthPreferenceController mStorageHealthPreferenceController;
     private List<NonCurrentUserController> mNonCurrentUsers;
     private @ProfileType int mProfileType;
     private int mUserId;
@@ -101,6 +103,7 @@ public class StorageCategoryFragment extends DashboardFragment
             // onAttach to createPreferenceControllers and mPreferenceController will be null.
             return;
         }
+        mStorageHealthPreferenceController.setSelectedStorageEntry(mSelectedStorageEntry);
 
         // To prevent flicker, hides non-current users preference.
         // onReceivedSizes will set it visible for private storage.
@@ -170,6 +173,7 @@ public class StorageCategoryFragment extends DashboardFragment
         mStorageCacheHelper = new StorageCacheHelper(getContext(), mUserId);
 
         super.onAttach(context);
+        mStorageHealthPreferenceController = use(StorageHealthPreferenceController.class);
 
         ManageStoragePreferenceController manageStoragePreferenceController =
                 use(ManageStoragePreferenceController.class);

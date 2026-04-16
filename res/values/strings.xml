@@ -8760,6 +8760,7 @@
 
     <!-- List of synonyms for Storage settings (everything related to storage on the device), used to match in settings search [CHAR LIMIT=NONE] -->
     <string name="keywords_storage_settings">memory, cache, data, delete, clear, free, space</string>
+    <string name="keywords_storage_health">storage health, flash wear, lifetime, ufs, emmc, nand</string>
 
     <!-- List of synonyms for the Bluetooth setting, used to match in settings search [CHAR LIMIT=NONE] -->
     <string name="keywords_bluetooth_settings">connected, device, headphones, headset, speaker, wireless, pair, earbuds, music, media </string>

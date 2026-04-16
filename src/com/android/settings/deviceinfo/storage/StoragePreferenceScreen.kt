@@ -28,6 +28,7 @@ import android.util.SparseArray
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.android.settings.R
+import com.android.settings.core.SubSettingLauncher
 import com.android.settings.core.PreferenceScreenMixin
 import com.android.settings.deviceinfo.StorageDashboardFragment
 import com.android.settings.flags.Flags
@@ -94,6 +95,27 @@ open class StoragePreferenceScreen(private val context: Context) :
                     cache.totalSize,
                 )
             +StoragePreference(KEY_SUMMARY_TOTAL, 0, { null }, { totalSummary }, { totalSummary })
+
+            val remainingLifetimePercent = StorageHealthUtils.getRemainingLifetimePercent(context)
+            if (remainingLifetimePercent != StorageHealthUtils.REMAINING_LIFETIME_UNAVAILABLE) {
+                +StoragePreference(
+                    KEY_STORAGE_HEALTH,
+                    R.string.storage_health,
+                    { c ->
+                        SubSettingLauncher(c)
+                            .setDestination(StorageHealthFragment::class.java.name)
+                            .setTitleRes(R.string.storage_health)
+                            .setSourceMetricsCategory(SettingsEnums.SETTINGS_STORAGE_CATEGORY)
+                            .toIntent()
+                    },
+                    {
+                        StorageHealthUtils.getRemainingLifetimeSummary(
+                            context,
+                            remainingLifetimePercent,
+                        )
+                    },
+                )
+            }
 
             // Free up space
             +StoragePreference(
@@ -314,6 +336,7 @@ open class StoragePreferenceScreen(private val context: Context) :
 
         const val KEY_SUMMARY_USED = "storage_summary_used"
         const val KEY_SUMMARY_TOTAL = "storage_summary_total"
+        const val KEY_STORAGE_HEALTH = "storage_health"
         const val KEY_FREE_UP_SPACE = "free_up_space"
         const val KEY_PREF_APPS = "pref_apps"
         const val KEY_PREF_GAMES = "pref_games"

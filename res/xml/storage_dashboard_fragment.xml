@@ -31,16 +31,23 @@
         android:selectable="false"
         settings:searchable="false"
         settings:controller="com.android.settings.deviceinfo.storage.StorageUsageProgressBarPreferenceController"/>
+    <Preference
+        android:fragment="com.android.settings.deviceinfo.storage.StorageHealthFragment"
+        android:key="storage_health"
+        android:title="@string/storage_health"
+        android:summary="@string/summary_placeholder"
+        android:order="3"
+        settings:controller="com.android.settings.deviceinfo.storage.StorageHealthPreferenceController"/>
     <com.android.settingslib.PrimarySwitchPreference
         android:fragment="com.android.settings.deletionhelper.AutomaticStorageManagerSettings"
         android:key="toggle_asm"
         android:title="@string/automatic_storage_manager_preference_title"
         android:icon="@drawable/ic_storage"
-        android:order="3"
+        android:order="4"
         settings:controller="com.android.settings.deviceinfo.storage.AutomaticStorageManagementSwitchPreferenceController"/>
     <com.android.settingslib.widget.CardPreference
         android:key="free_up_space"
-        android:order="4"
+        android:order="5"
         android:title="@string/storage_free_up_space_title"
         android:summary="@string/storage_free_up_space_summary"
         settings:controller="com.android.settings.deviceinfo.storage.ManageStoragePreferenceController"/>
